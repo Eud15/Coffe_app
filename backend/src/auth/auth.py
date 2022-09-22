@@ -36,17 +36,23 @@ def get_token_auth_header():
     if head is None:
         raise AuthError({
             'code':"Missing header",
-            'description':"header is needed"
+            'description':"Add header"
             },401)
     head=head.split(' ')
-    if len(head)==1 or len(head)>2:
+    if len(head)==1:
         return jsonify({
         'success':False,
-        'error':'header should contain bearer token'
+        'error':'Add bearer token in header'
+        })
+
+    if len(head)==2: 
+        return jsonify({
+        'success':False,
+        'error':'Add bearer token in header'
         })
 
     if head[0].lower()!='bearer':
-        return "header should contain bearer"
+        return "Bearer is missed in header"
     
     return head[1]
 
@@ -66,14 +72,14 @@ def get_token_auth_header():
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
         raise AuthError({
-            'code': 'invalid_claims',
+            'code': 'invalid header',
             'description': 'Permissions not included in JWT.'
         }, 401)
 
     if permission not in payload['permissions']:
         raise AuthError({
             'code': 'unauthorized',
-            'description': 'you wont have Permission to request this role.'
+            'description': 'You are not authorized to to do this thing'
         }, 401)
     return True
 
@@ -126,7 +132,7 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': 'Incorrect claims. Please, check the audience and issuer.'
+                'description': 'Incorrect claims. You will check the audience and issuer to see what is the wrong.'
                     }, 401)
         except Exception:
                 raise AuthError({

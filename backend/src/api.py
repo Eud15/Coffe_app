@@ -18,9 +18,9 @@ CORS(app)
 @TODO uncomment the following line to initialize the datbase
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
-!! Running this funciton will add one
+!! Running this function will add one
 '''
-db_drop_and_create_all()
+#db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -93,9 +93,6 @@ def post_drinks(jwt):
     except:
         abort (400)
     
-    
-
-
 
 @app.route('/drinks/<id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
@@ -174,6 +171,14 @@ def badRequest(error):
         "error": 400,
         "message": "bad request"
     }), 400
+
+@app.errorhandler(500)
+def badRequest(error):
+    return jsonify({
+        "success": False,
+        "error": 500,
+        "message": "Internal server error"
+    }), 500
 
 
 @app.errorhandler(AuthError)
